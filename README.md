@@ -1,7 +1,8 @@
 # ngram2vec
 The toolkit implements the ngram2vec model proposed in emnlp 2017
 
-In this work, we introduce ngrams into recent word representation methods inspired by traditional language modeling problem. Significant improvements are witnessed in some settings when ngrams are considered. For example, PPMI achieves 85+ accuracy on Google analogy questions (semantic group).
+In this work, we introduce ngrams into recent word representation methods inspired by traditional language modeling problem. Significant improvements are witnessed in some settings when ngrams are considered. For example, PPMI achieves 85+ accuracy on Google analogy questions (semantic group).This toolkit provides the workflow of the proposed ngram models. It enables users to build vocabulary and co-occurrence matrix at a certain memory size. Also, we do optimization on many stages to speed up the process and reduce disk space required.
 
 
 ### **corpus2vocab**
+builds
