@@ -30,12 +30,12 @@ python ngram2vec/pairs2vocab.py ${output_path}/pairs ${output_path}/words.vocab 
 
 python ngram2vec/text2numpy.py ${output_path}/sgns/sgns.words
 python ngram2vec/text2numpy.py ${output_path}/sgns/sgns.contexts
-analogy_path = testsets/analogy
+analogy_path=testsets/analogy
 for dataset in ${analogy_path}/google.txt ${analogy_path}/semantic.txt ${analogy_path}/syntactic.txt ${analogy_path}/msr.txt
 do
 	python ngram2vec/analogy_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
 done
-ws_path = testsets/ws
+ws_path=testsets/ws
 for dataset in ${ws_path}/ws353_similarity.txt ${ws_path}/ws353_relatedness.txt ${ws_path}/bruni_men.txt ${ws_path}/radinsky_mturk.txt ${ws_path}/luong_rare.txt ${ws_path}/sim999.txt
 do
 	python ngram2vec/ws_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
