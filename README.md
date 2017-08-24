@@ -5,4 +5,5 @@ In this work, we introduce ngrams into recent word representation methods inspir
 
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
-**corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation)
+**corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation), used by SGNS model.
+**pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In ·uni_bi· case Center word voca)
