@@ -2,10 +2,10 @@
 
 win=2
 size=300
-thr=10
+thr=100
 sub=1e-5
 iters=3
-threads=12
+threads=8
 negative=5
 memsize=8.0
 corpus=wiki2010.clean
