@@ -5,5 +5,7 @@ In this work, we introduce ngrams into recent word representation methods inspir
 
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
-**corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation), used by SGNS model.
-**pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In `uni_bi` case Center word voca)
+**corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation), used by SGNS model<br>
+**pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In `uni_bi` case, center word vocabulary only contains words while context vocabulary contains both words and bigrams)<br>
+**pairs2counts** builds co-occurrence matrix from pairs. We accelerate this stage by using mixed and stripes strategies. By now we only upload a coarse version and we will continue improving this code<br>
+**counts2pmi** learns PMI matrix from counts
