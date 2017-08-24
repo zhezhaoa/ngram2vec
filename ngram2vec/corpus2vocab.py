@@ -9,26 +9,27 @@ def main():
         corpus2vocab.py [options] <corpus> <output>
     
     Options:
-        --ngram NUM              Ngram [default: 1]
+        --ngram NUM              Vocabulary includes grams of 1st to nth order [default: 1]
         --memory_size NUM        Memory size available [default: 8.0]
         --min_count NUM          Ignore words below a threshold [default: 10]
     """)
 
+    print "**********************"
     print "corpus2vocab"
     ngram = int(args['--ngram'])
     memory_size = float(args['--memory_size']) * 1000**3
     min_count = int(args['--min_count'])
-    vocab = {}
-    reduce_thr = 1
+    vocab = {} # vocabulary (stored by dictionary)
+    reduce_thr = 1 # remove low-frequency words when memory is insufficient
     memory_size_used = 0 # size of memory used by keys & values in dictionary (not include dictionary itself) 
 
     with open(args['<corpus>']) as f:
-        token_num = 0
-        print str(token_num/1000**2) + "M tokens processed."
+        tokens_num = 0
+        print str(tokens_num/1000**2) + "M tokens processed."
         for line in f:
-            print "\x1b[1A" + str(token_num/1000**2) + "M tokens processed."
+            print "\x1b[1A" + str(tokens_num/1000**2) + "M tokens processed."
             tokens = line.strip().split()
-            token_num += len(tokens)
+            tokens_num += len(tokens)
             for pos in xrange(len(tokens)):            
                 for gram in xrange(1, ngram+1):
                     token = getNgram(tokens, pos, gram)
@@ -37,18 +38,18 @@ def main():
                     if token not in vocab :
                         memory_size_used += getsizeof(token)
                         vocab[token] = 1
-                        if memory_size_used + getsizeof(vocab) > memory_size * 0.8:
+                        if memory_size_used + getsizeof(vocab) > memory_size * 0.8: #reduce vocabulary when memory is insufficient
                             reduce_thr += 1
                             vocab_size = len(vocab)
                             vocab = {w: c for w, c in vocab.iteritems() if c >= reduce_thr}
-                            memory_size_used *= float(len(vocab)) / vocab_size
+                            memory_size_used *= float(len(vocab)) / vocab_size #estimate the size of memory used
                     else:
                         vocab[token] += 1
 
-    vocab = {w: c for w, c in vocab.iteritems() if c >= min_count}
-    vocab = sorted(vocab.iteritems(), key=lambda item: item[1], reverse=True)
+    vocab = {w: c for w, c in vocab.iteritems() if c >= min_count} #remove low-frequency words by pre-specified threshold
+    vocab = sorted(vocab.iteritems(), key=lambda item: item[1], reverse=True) #sort vocabulary by frequency in descending order
     save_count_vocabulary(args['<output>'], vocab)
-    print "number of tokens: " + str(token_num)
+    print "number of tokens: " + str(tokens_num)
     print "vocab size: " + str(len(vocab))
     print "low-frequency threshold: " + str(min_count if min_count > reduce_thr else reduce_thr)
     print "corpus2vocab finished"
