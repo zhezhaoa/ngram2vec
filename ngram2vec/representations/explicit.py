@@ -12,9 +12,9 @@ class Explicit:
     """
     
     def __init__(self, path, normalize=True):
-        self.wi, self.iw = load_vocabulary(path + '../words.vocab')
-        self.ci, self.ic = load_vocabulary(path + '../contexts.vocab')
-        self.m = load_matrix(path + 'ppmi')
+        self.wi, self.iw = load_vocabulary(path + '.words.vocab')
+        self.ci, self.ic = load_vocabulary(path + '.contexts.vocab')
+        self.m = load_matrix(path)
         self.m.data = np.log(self.m.data)
         self.normal = normalize
         if normalize:
