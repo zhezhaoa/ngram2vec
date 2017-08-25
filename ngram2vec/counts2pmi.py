@@ -26,17 +26,9 @@ def main():
 
 
 def read_counts_matrix(words_path, contexts_path, counts_path):
-    """
-    Reads the counts into a sparse matrix (CSR) from the count-word-context textual format.
-    """
-
-    w2i, i2w = load_vocabulary(words_path)
-    c2i, i2c = load_vocabulary(contexts_path)
-    counts = csr_matrix((len(w2i), len(c2i)), dtype=np.float32)
-    tmp_counts = csr_matrix((len(w2i), len(c2i)), dtype=np.float32)
-    update_threshold = 10 * 1000**2
+    wi, iw = load_vocabulary(words_path)
+    ci, ic = load_vocabulary(contexts_path)
     counts_num = 0
-    i = 0
     row = []
     col = []
     data = []
@@ -49,31 +41,12 @@ def read_counts_matrix(words_path, contexts_path, counts_path):
             row.append(int(word))
             col.append(int(context))
             data.append(int(float(count)))
-            i += 1
-            if i == update_threshold:
-                i = 0
-                row = np.asarray(row)
-                col = np.asarray(col)
-                data = np.asarray(data)
-                tmp_counts = csr_matrix((data, (row, col)), shape=(len(w2i), len(c2i)), dtype=np.float32)
-                counts = counts + tmp_counts
-                row = []
-                col = []
-                data = []
             counts_num += 1
-    row = np.asarray(row)
-    col = np.asarray(col)
-    data = np.asarray(data)
-    tmp_counts = csr_matrix((data, (row, col)), shape=(len(w2i), len(c2i)), dtype=np.float32)
-    counts = counts + tmp_counts
-
+    counts = csr_matrix((data, (row, col)), shape=(len(wi), len(ci)), dtype=np.float32)
     return counts
 
 
 def calc_pmi(counts, cds):
-    """
-    Calculates e^PMI; PMI without the log().
-    """
     sum_w = np.array(counts.sum(axis=1))[:, 0]
     sum_c = np.array(counts.sum(axis=0))[0, :]
     if cds != 1:
