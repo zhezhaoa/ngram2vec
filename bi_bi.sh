@@ -5,15 +5,15 @@ size=300
 thr=100
 sub=1e-5
 iters=3
-threads=8
+threads=10
 negative=5
 memsize=8.0
 corpus=wiki2010.clean
 output_path=outputs/bi_bi/win${win}
 
 mkdir -p ${output_path}/sgns
-#python ngram2vec/corpus2vocab.py --ngram 2 --memory_size ${memsize} --min_count ${thr} ${corpus} ${output_path}/vocab
-#python ngram2vec/corpus2pairs.py --win ${win} --sub ${sub} --ngram_word 2 --ngram_context 2 --threads_num ${threads} --overlap ${corpus} ${output_path}/vocab ${output_path}/pairs
+python ngram2vec/corpus2vocab.py --ngram 2 --memory_size ${memsize} --min_count ${thr} ${corpus} ${output_path}/vocab
+python ngram2vec/corpus2pairs.py --win ${win} --sub ${sub} --ngram_word 2 --ngram_context 2 --threads_num ${threads} --overlap ${corpus} ${output_path}/vocab ${output_path}/pairs
 if [ -f "${output_path}/win${win}/pairs" ]
 then
 	rm ${output_path}/pairs
@@ -27,7 +27,8 @@ python ngram2vec/pairs2vocab.py ${output_path}/pairs ${output_path}/words.vocab 
 
 ./word2vecf/word2vecf -train ${output_path}/pairs -pow 0.75 -cvocab ${output_path}/contexts.vocab -wvocab ${output_path}/words.vocab -dumpcv ${output_path}/sgns/sgns.contexts -output ${output_path}/sgns/sgns.words -threads ${threads} -negative ${negative} -size ${size} -iters ${iters}
 
-
+cp ${output_path}/words.vocab ${output_path}/sgns/sgns.words.vocab
+cp ${output_path}/contexts.vocab ${output_path}/sgns/sgns.contexts.vocab
 python ngram2vec/text2numpy.py ${output_path}/sgns/sgns.words
 python ngram2vec/text2numpy.py ${output_path}/sgns/sgns.contexts
 analogy_path=testsets/analogy
@@ -40,4 +41,3 @@ for dataset in ${ws_path}/ws353_similarity.txt ${ws_path}/ws353_relatedness.txt 
 do
 	python ngram2vec/ws_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
 done
-
