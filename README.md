@@ -5,9 +5,17 @@ In this work, we introduce ngrams into recent word representation methods inspir
 
 ## Example use cases
 
-A corpus should be prepared at first. We recommend to fetch it at<br> 
-http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2<br>
-, a pre-processed wiki corpus. 
+Firstly, run the following codes to make some files executable.<br>
+`chmod +x *.sh`<br>
+`chmod +x scripts/clean_corpus.sh`<br>
+`chmod +x word2vecf/word2vecf`<br>
+
+Also, a corpus should be prepared. We recommend to fetch it at<br> 
+http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2 , a wiki corpus without XML tags. `scripts/clean_corpus.sh` is used for cleaning corpus in this work.<br> `clean_corpus.sh ${corpus} > ${corpus}.clean`<br>
+
+run `./uni_uni.sh` to see baselines<br>
+run `./uni_b.sh` and PPMI of uni_bi type will bring you state-of-the-art results on Google semantic questions (85+) <br>
+run `./uni_uni.sh` to see significant improvments achieved when ngrams are introduced into SGNS<br> 
 
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
@@ -15,3 +23,7 @@ http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2<br>
 **pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In `uni_bi` case, center word vocabulary only contains words while context vocabulary contains both words and bigrams)<br>
 **pairs2counts** builds co-occurrence matrix from pairs. We accelerate this stage by using mixed and stripes strategies. By now we only upload a coarse version and we will continue improving this code<br>
 **counts2pmi** learns PMI matrix from counts
+
+## Acknowledgments
+
+This toolkit are built upon Omer Levy's work http://bitbucket.org/omerlevy/hyperwords
