@@ -47,6 +47,8 @@ python ngram2vec/pairs2counts.py --memory_size ${memsize} ${output_path}/pairs $
 python ngram2vec/counts2ppmi.py ${output_path}/words.vocab ${output_path}/contexts.vocab ${output_path}/counts ${output_path}/ppmi/ppmi
 
 #PPMI evaluation
+cp ${output_path}/words.vocab ${output_path}/ppmi/ppmi.words.vocab
+cp ${output_path}/contexts.vocab ${output_path}/ppmi/ppmi.contexts.vocab
 for dataset in testsets/analogy/google.txt testsets/analogy/semantic.txt testsets/analogy/syntactic.txt testsets/analogy/msr.txt
 do
 	python ngram2vec/analogy_eval.py PPMI ${output_path}/ppmi/ppmi ${dataset}
