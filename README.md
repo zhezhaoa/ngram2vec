@@ -20,7 +20,7 @@ http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2 , a wiki corpus
 
 run `./uni_uni.sh` to see baselines<br>
 run `./uni_bi.sh` and PPMI of uni_bi type will bring you state-of-the-art results on Google semantic questions (85+) <br>
-run `./uni_uni.sh` to see significant improvments achieved when ngrams are introduced into SGNS<br> 
+run `./bi_bi.sh` to see significant improvments achieved when ngrams are introduced into SGNS<br> 
 
 Note that in this toolkit, we remove low-frequency words with a threshold of 100 to speed up training and evaluation process. One can set thr=10 to reproduce the results reported in the paper. 
 
