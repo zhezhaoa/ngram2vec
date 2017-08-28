@@ -33,9 +33,10 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 **counts2ppmi** learns PPMI matrix from counts
 **counts2shuf** shuffles the counts
 **counts2bin** transfer counts into binary format, which is supported by glove.
-**glovef** To support arbitrary context features, we use a modification of word2vec, **word2vecf (implemented by Omer Levy)**, to train SGNS model. In spirit of word2vecf, we implement glovef upon **glove https://github.com/stanfordnlp/GloVe**
+**glovef** To support arbitrary context features, we use a modification of word2vec, word2vecf (implemented by Omer Levy), to train SGNS model. In spirit of word2vecf, we implement glovef upon glove.
 
 ## Acknowledgments
 
 This toolkit is inspired by Omer Levy's work http://bitbucket.org/omerlevy/hyperwords<br>
 We reuse part of his code in this toolkit.
+We build glovef upon glove https://github.com/stanfordnlp/GloVe
