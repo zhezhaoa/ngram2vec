@@ -25,7 +25,7 @@ def main():
             word, context, count = line.strip().split()
             b = struct.pack('iid', int(word), int(context), float(count))
             bin_file.write(b)
-    print "number of counts: " + counts_num
+    print "number of counts: " + str(counts_num)
     bin_file.close()
 
 if __name__ == '__main__':
