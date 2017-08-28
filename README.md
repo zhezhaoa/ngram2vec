@@ -30,9 +30,9 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 **corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation), used by SGNS model<br>
 **pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In `uni_bi` case, center word vocabulary only contains words while context vocabulary contains both words and bigrams)<br>
 **pairs2counts** builds co-occurrence matrix from pairs. We accelerate this stage by using mixed and stripes strategies. By now we only upload a coarse version and we will continue improving this code<br>
-**counts2ppmi** learns PPMI matrix from counts
-**counts2shuf** shuffles the counts
-**counts2bin** transfer counts into binary format, which is supported by glove.
+**counts2ppmi** learns PPMI matrix from counts<br>
+**counts2shuf** shuffles the counts<br>
+**counts2bin** transfer counts into binary format, which is supported by glove<br>
 **glovef** To support arbitrary context features, we use a modification of word2vec, word2vecf (implemented by Omer Levy), to train SGNS model. In spirit of word2vecf, we implement glovef upon glove.
 
 ## Acknowledgments
