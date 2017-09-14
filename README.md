@@ -26,7 +26,7 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 
 ## Workflow
 
-<img src="https://github.com/zhezhaoa/ngram2vec/blob/master/workflow.jpg" width = "500" align=center />
+<img src="https://github.com/zhezhaoa/ngram2vec/blob/master/workflow.jpg" width = "600" align=center />
 
 ## Some comments
 
