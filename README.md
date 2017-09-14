@@ -24,6 +24,10 @@ run `./bi_bi.sh` to see significant improvments achieved when ngrams are introdu
 
 Note that in this toolkit, we remove low-frequency words with a threshold of 100 to speed up training and evaluation process. One can set thr=10 to reproduce the results reported in the paper. 
 
+## Workflow
+
+![image](https://github.com/zhezhaoa/ngram2vec/blob/master/workflow.jpg)
+
 ## Some comments
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
