@@ -1,4 +1,4 @@
-# ngram2vec
+# ngram2vec (a toolkit for learning high quality word and ngram embeddings)
 The toolkit implements the ngram2vec model proposed in EMNLP2017<br>
 **Ngram2vec: Learning Improved Word Representation from Ngram Co-occurrence Statistics**<br>
 
