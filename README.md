@@ -1,12 +1,18 @@
 # ngram2vec
 The toolkit implements the ngram2vec model proposed in EMNLP2017<br>
 **Ngram2vec: Learning Improved Word Representation from Ngram Co-occurrence Statistics**<br>
-aiming at learning high quality word embedding and ngram embedding.
+aiming at learning high quality word embedding and ngram (n-gram) embedding.
 
 **ngram2vec** toolkit is a natural extension to **word2vec**, where ngrams are introduced into recent word representation methods inspired by traditional language modeling problem. The toolkit can generate state-of-the-art word embeddings and high-quality ngram embeddings. For example, PPMI achieves 85+ accuracy on Google analogy questions (semantic group). 
 
 This toolkit may be also a good startpoint for those who want to learn about word representation models. It includes SGNS, GloVe, PPMI, and SVD and organize them in a pipeline. Arbitrary context features are supported. In terms of efficiency, it enables users to build vocabulary and co-occurrence matrix at a certain memory size. Also, we do optimization on many stages to speed up the process and reduce disk space required.
 
+## Requirements
+* Python 2.7
+* numpy
+* scipy
+* sparsesvd
+* docopt
 
 ## Example use cases
 
