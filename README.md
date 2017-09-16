@@ -1,6 +1,6 @@
 # ngram2vec
-The toolkit implements the ngram2vec model proposed in EMNLP2017<br>
-**[Ngram2vec: Learning Improved Word Representations from Ngram Co-occurrence Statistics] (http://www.aclweb.org/anthology/D17-1023)**<br>
+The toolkit implements the ngram2vec model proposed in EMNLP2017 
+**[Ngram2vec: Learning Improved Word Representations from Ngram Co-occurrence Statistics] (http://www.aclweb.org/anthology/D17-1023)**
 aiming at learning high quality word embedding and ngram (n-gram) embedding.
 
 **ngram2vec** toolkit is a natural extension to **word2vec**, where ngrams are introduced into recent word representation methods inspired by traditional language modeling problem. The toolkit can generate state-of-the-art word embeddings and high-quality ngram embeddings. For example, PPMI achieves 85+ accuracy on Google analogy questions (semantic group). 
