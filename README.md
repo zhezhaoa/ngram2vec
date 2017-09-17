@@ -52,4 +52,4 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 This toolkit is inspired by Omer Levy's work http://bitbucket.org/omerlevy/hyperwords<br>
 We reuse part of his code in this toolkit. We also thank him for his kind suggestions.<br>
 We build glovef upon glove https://github.com/stanfordnlp/GloVe<br>
-I can not finish this toolkit without the help from Bofang Li, Shen Li, my tutors Tao Liu and Xiaoyong DU, and Jianwei Cui in XiaoMi
+I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei Cui in XiaoMi, and my tutors Tao Liu & Xiaoyong Du
