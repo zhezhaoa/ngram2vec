@@ -45,10 +45,11 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 **counts2shuf** shuffles the counts<br>
 **counts2bin** transfer counts into binary format, which is supported by glove<br>
 **word2vecf** supports arbitrary context features (implemented by Omer Levy), which is used to train SGNS model
-**glovef** supports arbitrary context features. In spirit of word2vecf, we implement glovef upon glove.
+**glovef** supports arbitrary context features. In spirit of word2vecf, we implement glovef upon glove
 
 ## Acknowledgments
 
 This toolkit is inspired by Omer Levy's work http://bitbucket.org/omerlevy/hyperwords<br>
-We reuse part of his code in this toolkit. We also thank him for his kind suggestions.
-We build glovef upon glove https://github.com/stanfordnlp/GloVe
+We reuse part of his code in this toolkit. We also thank him for his kind suggestions.<br>
+We build glovef upon glove https://github.com/stanfordnlp/GloVe<br>
+I can not finish this toolkit without the help from Bofang Li, Shen Li, my tutors Tao Liu and Xiaoyong DU, and Jianwei Cui in XiaoMi
