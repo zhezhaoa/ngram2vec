@@ -53,3 +53,9 @@ This toolkit is inspired by Omer Levy's work http://bitbucket.org/omerlevy/hyper
 We reuse part of his code in this toolkit. We also thank him for his kind suggestions.<br>
 We build glovef upon glove https://github.com/stanfordnlp/GloVe<br>
 I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei Cui in XiaoMi, and my tutors Tao Liu & Xiaoyong Du
+
+## Contact us
+
+Zhe Zhao, helloworld@ruc.edu.cn
+Bofang Li, libofang@ruc.edu.cn
+Shen Li, shen@mail.bnu.edu.cn
