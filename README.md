@@ -56,6 +56,6 @@ I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei 
 
 ## Contact us
 
-Zhe Zhao, helloworld@ruc.edu.cn
-Bofang Li, libofang@ruc.edu.cn
+Zhe Zhao, helloworld@ruc.edu.cn<br>
+Bofang Li, libofang@ruc.edu.cn<br>
 Shen Li, shen@mail.bnu.edu.cn
