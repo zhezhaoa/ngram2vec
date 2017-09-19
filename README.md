@@ -44,7 +44,7 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 **counts2ppmi** learns PPMI matrix from counts<br>
 **counts2shuf** shuffles the counts<br>
 **counts2bin** transfer counts into binary format, which is supported by glove<br>
-**word2vecf** supports arbitrary context features (implemented by Omer Levy), which is used to train SGNS model
+**word2vecf** supports arbitrary context features (implemented by Omer Levy), which is used to train SGNS model<br>
 **glovef** supports arbitrary context features. In spirit of word2vecf, we implement glovef upon glove
 
 ## Acknowledgments
