@@ -68,6 +68,10 @@ Ngram2vec: Learning Improved Word Representations from Ngram Co-occurrence Stati
   year      = {2017},<br>
 }`
 
+    run go.sh to observe the effectiveness of global information on sentiment analysis.
+    chmod +x go.sh
+    sudo ./go.sh
+
 
 ## Acknowledgments
 
