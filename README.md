@@ -35,6 +35,10 @@ Note that in this toolkit, we remove low-frequency words with a threshold of 100
 
 <img src="https://github.com/zhezhaoa/ngram2vec/blob/master/workflow.jpg" width = "600" align=center />
 
+## Testsets
+
+Besides English word analogy and similarity datasets, we provide several Chinese analogy datasets, which contain comprehensive analogy questions. Some of them are constructed by directly translating English analogy datasets. Some are unique to Chinese. I hope they can be used for . Feel free to contact us. We really appreciate your advice.
+
 ## Some comments
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
