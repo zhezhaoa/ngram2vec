@@ -57,7 +57,8 @@ Besides English word analogy and similarity datasets, we provide several Chinese
          author = {Zhe Zhao and Tao Liu and Shen Li and Bofang Li and Xiaoyong Du},
          title = {Ngram2vec: Learning Improved Word Representations from Ngram Co-occurrence Statistics},   
          booktitle = {Proceedings of the 2017 Conference on Empirical Methods in Natural Language Processing, {EMNLP} 2017, Copenhagen, Denmark, September 9-11, 2017},      
-         year = {2017}     
+         year = {2017}
+     }
 
 
 ## Acknowledgments
