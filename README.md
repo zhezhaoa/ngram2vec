@@ -47,8 +47,8 @@ Besides English word analogy and similarity datasets, we provide several Chinese
 **pairs2counts** builds co-occurrence matrix from pairs. We accelerate this stage by using mixed and stripes strategies. By now we only upload a coarse version and we will continue improving this code<br>
 **counts2ppmi** learns PPMI matrix from counts<br>
 **counts2shuf** shuffles the counts<br>
-**counts2bin** transfer counts into binary format, which is supported by glove<br>
-**word2vecf** supports arbitrary context features (implemented by Omer Levy), which is used to train SGNS model<br>
+**counts2bin** transfers counts into binary format, which is supported by glove<br>
+**word2vecf** supports arbitrary context features (implemented by Yoav Goldberg), which is used to train SGNS model. We also re-implement word2vecf in python, which is much easier to read compared with C version. One hundred lines are enough to implement word2vecf in python (including training in multiple processes, print detailed infomation, reading pairs & vocab and etc.). Another advantage is that word2vecf in python can run on Windows. The disadvantage is that word2vecf in python is slower compared with C version<br>
 **glovef** supports arbitrary context features. In spirit of word2vecf, we implement glovef upon glove
 
 ## References
