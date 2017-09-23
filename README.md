@@ -23,7 +23,7 @@ Firstly, run the following codes to make some files executable.<br>
 `chmod +x glovef/build/glove`<br>
 
 Also, a corpus should be prepared. We recommend to fetch it at<br> 
-http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2 , a wiki corpus without XML tags. `scripts/clean_corpus.sh` is used for cleaning corpus in this work.<br> `clean_corpus.sh ${corpus} > ${corpus}.clean`<br>
+http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2 , a wiki corpus without XML tags. `scripts/clean_corpus.sh` is used for cleaning corpus in this work.<br> for example `clean_corpus.sh WestburyLab.wikicorp.201004.txt > wiki2010.clean`<br>
 
 run `./uni_uni.sh` to see baselines<br>
 run `./uni_bi.sh` and PPMI of uni_bi type will bring you state-of-the-art results on Google semantic questions (85+) <br>
