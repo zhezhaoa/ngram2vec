@@ -5,7 +5,7 @@
 
 from docopt import docopt
 import sys
-sys.path.append('../ngram2vec') 
+sys.path.append('./ngram2vec') 
 from representations.matrix_serializer import load_vocabulary, load_count_vocabulary
 from multiprocessing import Pool, Value, Array
 import numpy as np
