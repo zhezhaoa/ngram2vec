@@ -146,7 +146,7 @@ def main():
             pairs_num += 1
 
     pairs_num *= iters
-    global_word_count = Value('i', 0)
+    global_word_count = Value('l', 0)
     alpha = 0.025
     syn0, syn1 = init_net(size, len(words), len(contexts))
     table = UnigramTable(i2c, contexts)
