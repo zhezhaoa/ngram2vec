@@ -3,7 +3,7 @@
 win=2
 size=300
 thr=100
-sub=1e-3
+sub=1e-5
 iters=3
 threads=8
 negative=5
