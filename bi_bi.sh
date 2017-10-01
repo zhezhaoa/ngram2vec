@@ -41,3 +41,17 @@ for dataset in ${ws_path}/ws353_similarity.txt ${ws_path}/ws353_relatedness.txt 
 do
 	python ngram2vec/ws_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
 done
+
+# word2vecf implemented by python
+python word2vecf/word2vecf.py ${output_path}/pairs ${output_path}/words.vocab ${output_path}/contexts.vocab ${output_path}/sgns/sgns.words --negative ${negative} --size ${size} --iters ${iters} --processes_num ${threads}
+python ngram2vec/text2numpy.py ${output_path}/sgns/sgns.words
+analogy_path=testsets/analogy
+for dataset in ${analogy_path}/google.txt ${analogy_path}/semantic.txt ${analogy_path}/syntactic.txt ${analogy_path}/msr.txt
+do
+	python ngram2vec/analogy_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
+done
+ws_path=testsets/ws
+for dataset in ${ws_path}/ws353_similarity.txt ${ws_path}/ws353_relatedness.txt ${ws_path}/bruni_men.txt ${ws_path}/radinsky_mturk.txt ${ws_path}/luong_rare.txt ${ws_path}/sim999.txt
+do
+	python ngram2vec/ws_eval.py SGNS ${output_path}/sgns/sgns ${dataset}
+done
