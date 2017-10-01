@@ -49,9 +49,13 @@ def train_process(pid):
     lines_processed = 0
     alpha = starting_alpha
     pairs = []
+    start_line = (pairs_num / processes_num) * pid 
+    end_line = (pairs_num / processes_num) * (pid + 1)
     for l in fi:
         lines_count += 1
-        if lines_count % processes_num != pid:
+        # if lines_count % processes_num != pid:
+        #     continue
+        if lines_count < start_line or lines_count > end_line:
             continue
         lines_processed += 1
         if len(l) == 0:
@@ -63,10 +67,10 @@ def train_process(pid):
         if lines_processed % 10000 == 0:
             global_word_count.value += (lines_processed - last_lines_processed)
             last_lines_processed = lines_processed
-            alpha = starting_alpha * (1 - float(global_word_count.value) / pairs_num)
+            alpha = starting_alpha * (1 - float(global_word_count.value) / (pairs_num*iters))
             if alpha < starting_alpha * 0.0001: 
                 alpha = starting_alpha * 0.0001
-            sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, pairs_num, float(global_word_count.value) / pairs_num * 100))
+            sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value) / (pairs_num*iters) * 100))
             sys.stdout.flush()
 
         neu1e = np.zeros(size)
@@ -80,7 +84,7 @@ def train_process(pid):
         syn0[pairs[0]] += neu1e
 
     global_word_count.value += (lines_processed - last_lines_processed)
-    sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, pairs_num, float(global_word_count.value)/pairs_num * 100))
+    sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value)/(pairs_num*iters) * 100))
     sys.stdout.flush()
     fi.close()
 
@@ -106,8 +110,8 @@ def sigmoid(z):
 
 
 def __init_process(*args):
-    global w2i, c2i, syn0, syn1, table, negative, size, starting_alpha, processes_num, global_word_count, pairs_num, fi
-    w2i, c2i, syn0_tmp, syn1_tmp, table, negative, size, starting_alpha, processes_num, global_word_count, pairs_num = args[:-1]
+    global w2i, c2i, syn0, syn1, table, negative, size, starting_alpha, processes_num, global_word_count, pairs_num, iters, fi
+    w2i, c2i, syn0_tmp, syn1_tmp, table, negative, size, starting_alpha, processes_num, global_word_count, pairs_num, iters = args[:-1]
     fi = open(args[-1], 'r')
     syn0 = np.ctypeslib.as_array(syn0_tmp)
     syn1 = np.ctypeslib.as_array(syn1_tmp)
@@ -117,7 +121,7 @@ def main():
     args = docopt("""
     Usage:
         word2vecf.py [options] <pairs> <words> <contexts> <outputs>
-    
+
     Options:
         --processes_num NUM        The number of processes [default: 12]
         --negative NUM             Negative sampling [default: 5]
@@ -145,14 +149,13 @@ def main():
         for l in f:
             pairs_num += 1
 
-    pairs_num *= iters
     global_word_count = Value('l', 0)
     alpha = 0.025
     syn0, syn1 = init_net(size, len(words), len(contexts))
     table = UnigramTable(i2c, contexts)
 
     for i in range(iters):
-        pool = Pool(processes=processes_num, initializer=__init_process, initargs=(w2i, c2i, syn0, syn1, table, negative, size, alpha, processes_num, global_word_count, pairs_num, pairs_path))
+        pool = Pool(processes=processes_num, initializer=__init_process, initargs=(w2i, c2i, syn0, syn1, table, negative, size, alpha, processes_num, global_word_count, pairs_num, iters, pairs_path))
         pool.map(train_process, range(processes_num))
 
     save(i2w, syn0, outputs_path)
