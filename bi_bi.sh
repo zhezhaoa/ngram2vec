@@ -14,7 +14,7 @@ output_path=outputs/bi_bi/win${win}
 mkdir -p ${output_path}/sgns
 python ngram2vec/corpus2vocab.py --ngram 2 --memory_size ${memsize} --min_count ${thr} ${corpus} ${output_path}/vocab
 python ngram2vec/corpus2pairs.py --win ${win} --sub ${sub} --ngram_word 2 --ngram_context 2 --threads_num ${threads} --overlap ${corpus} ${output_path}/vocab ${output_path}/pairs
-if [ -f "${output_path}/win${win}/pairs" ]
+if [ -f "${output_path}/pairs" ]
 then
 	rm ${output_path}/pairs
 fi
