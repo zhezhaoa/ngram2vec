@@ -5,7 +5,7 @@
 
 from docopt import docopt
 import sys
-sys.path.append('./ngram2vec') 
+sys.path.append('./ngram2vec')
 from representations.matrix_serializer import load_vocabulary, load_count_vocabulary
 from multiprocessing import Pool, Value, Array
 import numpy as np
@@ -70,8 +70,7 @@ def train_process(pid):
             alpha = starting_alpha * (1 - float(global_word_count.value) / (pairs_num*iters))
             if alpha < starting_alpha * 0.0001: 
                 alpha = starting_alpha * 0.0001
-            sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value) / (pairs_num*iters) * 100))
-            sys.stdout.flush()
+            print ("\x1b[1A" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value) / (pairs_num*iters) * 100))
 
         neu1e = np.zeros(size)
         classifiers = [(pairs[1], 1)] + [(target, 0) for target in table.sample(negative)]
@@ -84,13 +83,11 @@ def train_process(pid):
         syn0[pairs[0]] += neu1e
 
     global_word_count.value += (lines_processed - last_lines_processed)
-    sys.stdout.write("\rAlpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value)/(pairs_num*iters) * 100))
-    sys.stdout.flush()
+    print ("\x1b[1A" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count.value, (pairs_num*iters), float(global_word_count.value) / (pairs_num*iters) * 100))
     fi.close()
 
 
 def save(i2w, syn0, fo):
-    print 'Saving model to', fo
     size = len(syn0[0])
     fo = open(fo, 'w')
     fo.write('%d %d\n' % (len(syn0), size))
@@ -126,7 +123,7 @@ def main():
         --processes_num NUM        The number of processes [default: 12]
         --negative NUM             Negative sampling [default: 5]
         --size NUM                 Embedding size [default: 300]
-        --iters NUM                The number of iterations [default: 3]
+        --iters NUM                The number of iterations [default: 1]
     """)
     
     words_path = args['<words>']
@@ -153,13 +150,14 @@ def main():
     alpha = 0.025
     syn0, syn1 = init_net(size, len(words), len(contexts))
     table = UnigramTable(i2c, contexts)
+    print ()
 
     for i in range(iters):
         pool = Pool(processes=processes_num, initializer=__init_process, initargs=(w2i, c2i, syn0, syn1, table, negative, size, alpha, processes_num, global_word_count, pairs_num, iters, pairs_path))
         pool.map(train_process, range(processes_num))
 
     save(i2w, syn0, outputs_path)
-    print "word2vecf finished"
+    print ("word2vecf finished")
 
 
 if __name__ == '__main__':
