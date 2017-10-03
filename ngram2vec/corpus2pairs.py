@@ -4,6 +4,7 @@ from docopt import docopt
 import multiprocessing
 from corpus2vocab import getNgram
 from representations.matrix_serializer import load_count_vocabulary
+import six
 
 
 def main():
@@ -20,17 +21,17 @@ def main():
         --overlap                  Whether overlaping pairs are allowed or not
     """)
 
-    print "**********************"
-    print "corpus2pairs"
+    print ("**********************")
+    print ("corpus2pairs")
     threads_num = int(args['--threads_num'])
     threads_list = []
-    for i in xrange(0, threads_num): #extract pairs from corpus through multipule threads
+    for i in range(0, threads_num): #extract pairs from corpus through multipule threads
         thread = multiprocessing.Process(target=c2p, args=(args, i))
         thread.start()
         threads_list.append(thread)
     for thread in threads_list:
         thread.join()
-    print "corpus2pairs finished"
+    print ("corpus2pairs finished")
 
 
 def c2p(args, tid):
@@ -40,23 +41,23 @@ def c2p(args, tid):
     sub = subsample != 0
     vocab = load_count_vocabulary(args['<vocab>']) #load vocabulary (generated in corpus2vocab stage)
     train_uni_num = 0 #number of (unigram) tokens in corpus
-    for w, c in vocab.iteritems():
+    for w, c in six.iteritems(vocab):
         if '@$' not in w:
             train_uni_num += c
     train_num = sum(vocab.values()) #number of (ngram) tokens in corpus
     subsample *= train_uni_num
     if sub:
-        subsampler = dict([(word, 1 - sqrt(subsample / count)) for word, count in vocab.iteritems() if count > subsample]) #subsampling technique
+        subsampler = dict([(word, 1 - sqrt(subsample / count)) for word, count in six.iteritems(vocab) if count > subsample]) #subsampling technique
     if tid == 0:
-        print 'vocabulary size: ' + str(len(vocab))
+        print ('vocabulary size: ' + str(len(vocab)))
     with open(args['<corpus>']) as f:
         line_num = 0
         if tid == 0:
-            print str(line_num/1000**1) + "K lines processed."
+            print (str(int(line_num/1000**1)) + "K lines processed.")
         for line in f:
             line_num += 1
             if ((line_num) % 1000) == 0 and tid == 0:
-                print "\x1b[1A" + str(line_num/1000) + "K lines processed."
+                print ("\x1b[1A" + str(int(line_num/1000)) + "K lines processed.")
             if line_num % threads_num != tid:
                 continue
             line2features(line, args, vocab, pairs_file, sub, subsampler)
@@ -82,16 +83,16 @@ def line2features(line, args, vocab, pairs_file, sub, subsampler):
     overlap = args['--overlap']
     rnd = Random(17)
     tokens = line.strip().split()
-    for i in xrange(len(tokens)): #loop for each position in a line
-        for gram_word in xrange(1, ngram_word+1): #loop for grams of different orders in (center) word 
+    for i in range(len(tokens)): #loop for each position in a line
+        for gram_word in range(1, ngram_word+1): #loop for grams of different orders in (center) word 
             word = getNgram(tokens, i, gram_word)
             word = check_word(word, vocab, sub, subsampler, rnd)
             if word is None:
                 continue
-            for gram_context in xrange(1, ngram_context+1): #loop for grams of different orders in context
+            for gram_context in range(1, ngram_context+1): #loop for grams of different orders in context
                 start = i - win + gram_word - 1
                 end = i + win - gram_context + 1
-                for j in xrange(start, end + 1):
+                for j in range(start, end + 1):
                     if overlap:
                         if i == j and gram_word == gram_context:
                             continue
