@@ -1,5 +1,7 @@
 from docopt import docopt
 from scipy.stats.stats import spearmanr
+import sys
+sys.path.append('./ngram2vec/representations') 
 
 from representations.representation_factory import create_representation
 
@@ -18,7 +20,7 @@ def main():
     data = read_test_set(args['<task_path>'])
     representation = create_representation(args)
     correlation = evaluate(representation, data)
-    print args['<representation>'], args['<task_path>'], '\t%0.3f' % correlation
+    print (args['<representation>'] + " " +  args['<task_path>'] + '\t%0.3f' % correlation)
 
 
 def read_test_set(path):
@@ -38,7 +40,7 @@ def evaluate(representation, data):
             seen_num += 1
             results.append((representation.similarity(x, y), sim))
     actual, expected = zip(*results)
-    print "seen/total: " + str(seen_num) + "/" + str(len(data))
+    print ("seen/total: " + str(seen_num) + "/" + str(len(data)))
     return spearmanr(actual, expected)[0]
 
 

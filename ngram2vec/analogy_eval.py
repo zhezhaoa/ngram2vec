@@ -1,8 +1,8 @@
-from __builtin__ import sorted
-
 from docopt import docopt
 import numpy as np
 import random
+import sys
+sys.path.append('./ngram2vec/representations') 
 
 from representations.representation_factory import create_representation
 
@@ -22,7 +22,7 @@ def main():
     xi, ix = get_vocab(data)
     representation = create_representation(args)
     accuracy_add, accuracy_mul = evaluate(representation, data, xi, ix)
-    print args['<representation>'], args['<task_path>'], '\t%0.3f' % accuracy_add, '\t%0.3f' % accuracy_mul
+    print (args['<representation>'] + " " + args['<task_path>'] + '\t%0.3f\t%0.3f' % (accuracy_add, accuracy_mul))
 
 
 def read_test_set(path):
@@ -38,7 +38,6 @@ def get_vocab(data):
     vocab = set()
     for analogy in data:
         vocab.update(analogy)
-    vocab = sorted(vocab)
     return dict([(a, i) for i, a in enumerate(vocab)]), vocab
 
 
@@ -56,7 +55,7 @@ def evaluate(representation, data, xi, ix):
             correct_add += 1
         if b_mul == b_:
             correct_mul += 1
-    print 'seen/total: ', seen_data_size, len(data)
+    print ('seen/total: ' + " " + str(seen_data_size) + "/" + str(len(data)))
     return correct_add/float(seen_data_size), correct_mul/float(seen_data_size)
 
 
