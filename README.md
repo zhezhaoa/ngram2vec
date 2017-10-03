@@ -8,7 +8,7 @@ aiming at learning high quality word embedding and ngram (n-gram) embedding.
 This toolkit may be also a good startpoint for those who want to learn about word representation models. It includes SGNS, GloVe, PPMI, and SVD and organize them in a pipeline. Arbitrary context features are supported. In terms of efficiency, it enables users to build vocabulary and co-occurrence matrix at a certain memory size. Also, we do optimization on many stages to speed up the process and reduce disk space required.
 
 ## Requirements
-* Python 2.7
+* Python (both Python2 and 3 are supported)
 * numpy
 * scipy
 * sparsesvd
