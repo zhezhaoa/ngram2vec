@@ -24,7 +24,7 @@ Firstly, run the following codes to make some files executable.<br>
 
 Also, a corpus should be prepared. We recommend to fetch it at<br> 
 http://nlp.stanford.edu/data/WestburyLab.wikicorp.201004.txt.bz2 , a wiki corpus without XML tags. `scripts/clean_corpus.sh` is used for cleaning corpus in this work.<br> for example `scripts/clean_corpus.sh WestburyLab.wikicorp.201004.txt > wiki2010.clean`<br>
-A pre-processed (e.g. segmentation) chinese wiki corpus is available at https://pan.baidu.com/s/1kURV0rl , which can be directly used as corpus of this toolkit.
+A pre-processed (including segmentation) chinese wiki corpus is available at https://pan.baidu.com/s/1kURV0rl , which can be directly used as corpus of this toolkit.
 
 run `./uni_uni.sh` to see baselines<br>
 run `./uni_bi.sh` and PPMI of uni_bi type will bring you state-of-the-art results on Google semantic questions (85+) <br>
