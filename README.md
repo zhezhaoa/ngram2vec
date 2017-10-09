@@ -72,6 +72,6 @@ I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei 
 ## Contact us
 
 We are looking forward to receiving your questions and advice to this toolkit. We will reply you as soon as possible. We will further perfect this toolkit in a few weeks, including reimplement word2vecf and glovef in python and open line2features interface to better support adding arbitrary features.<br>  
-Zhe Zhao, helloworld@ruc.edu.cn , http://iir.ruc.edu.cn/~zhaoz/<br>
+Zhe Zhao, helloworld@ruc.edu.cn , https://zhezhaoa.github.io/<br>
 Bofang Li, libofang@ruc.edu.cn<br>
 Shen Li, shen@mail.bnu.edu.cn
