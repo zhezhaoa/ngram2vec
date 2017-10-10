@@ -84,7 +84,7 @@ done
 python ngram2vec/counts2shuf.py ${output_path}/counts ${output_path}/counts.shuf
 python ngram2vec/counts2bin.py ${output_path}/counts.shuf ${output_path}/counts.shuf.bin
 
-./GloVe/build/glove -save-file ${output_path}/glove/glove.words -threads ${threads} -input-file ${output_path}/counts.shuf.bin -vector-size ${size} -words-file ${output_path}/words.vocab -contexts-file ${output_path}/contexts.vocab 
+./glovef/build/glove -save-file ${output_path}/glove/glove.words -threads ${threads} -input-file ${output_path}/counts.shuf.bin -vector-size ${size} -words-file ${output_path}/words.vocab -contexts-file ${output_path}/contexts.vocab 
 
 cp ${output_path}/words.vocab ${output_path}/glove/glove.words.vocab
 python ngram2vec/text2numpy.py ${output_path}/glove/glove.words
