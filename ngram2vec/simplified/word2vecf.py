@@ -10,6 +10,8 @@ from representations.matrix_serializer import load_vocabulary, load_count_vocabu
 import numpy as np
 import math
 
+global_word_count = 0
+
 class UnigramTable:
     def __init__(self, i2c, contexts):
         vocab_size = len(i2c)
@@ -38,7 +40,7 @@ def init_net(size, words_num, contexts_num):
 
 
 def train_process(pairs_path, size, syn0, syn1, w2i, c2i, table, starting_alpha, negative, pairs_num, iters):
-    global_word_count = 0
+    global global_word_count
     lines_count = 0
     last_lines_processed = 0 
     lines_processed = 0
@@ -60,7 +62,7 @@ def train_process(pairs_path, size, syn0, syn1, w2i, c2i, table, starting_alpha,
             alpha = starting_alpha * (1 - float(global_word_count) / (pairs_num*iters))
             if alpha < starting_alpha * 0.0001: 
                 alpha = starting_alpha * 0.0001
-            print ("\x1b[1A" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count, (pairs_num*iters), float(global_word_count) / (pairs_num*iters) * 100))
+            sys.stdout.write("\r" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count, (pairs_num*iters), float(global_word_count) / (pairs_num*iters) * 100))
 
         neu1e = np.zeros(size)
         classifiers = [(pairs[1], 1)] + [(target, 0) for target in table.sample(negative)]
@@ -73,7 +75,7 @@ def train_process(pairs_path, size, syn0, syn1, w2i, c2i, table, starting_alpha,
         syn0[pairs[0]] += neu1e
 
     global_word_count += (lines_processed - last_lines_processed)
-    print ("\x1b[1A" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count, (pairs_num*iters), float(global_word_count) / (pairs_num*iters) * 100))
+    sys.stdout.write("\r" + "Alpha: %f Progress: %d of %d (%.2f%%)" %(alpha, global_word_count, (pairs_num*iters), float(global_word_count) / (pairs_num*iters) * 100))
     fi.close()
 
 
@@ -103,7 +105,7 @@ def main():
 
     Options:
         --negative NUM             Negative sampling [default: 5]
-        --size NUM                 Embedding size [default: 300]
+        --size NUM                 Embedding size [default: 100]
         --iters NUM                The number of iterations [default: 1]
     """)
     
@@ -129,8 +131,8 @@ def main():
     alpha = 0.025
     syn0, syn1 = init_net(size, len(words), len(contexts))
     table = UnigramTable(i2c, contexts)
-    print ()
-    train_process(pairs_path, size, syn0, syn1, w2i, c2i, table, alpha, negative, pairs_num, iters)
+    for i in range(iters):
+        train_process(pairs_path, size, syn0, syn1, w2i, c2i, table, alpha, negative, pairs_num, iters)
     save(i2w, syn0, outputs_path)
     print ("word2vecf finished")
 
