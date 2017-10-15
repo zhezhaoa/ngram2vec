@@ -1,6 +1,7 @@
 from docopt import docopt
 from representations.matrix_serializer import save_count_vocabulary
 from sys import getsizeof
+import sys
 import six
 
 
@@ -26,9 +27,8 @@ def main():
 
     with open(args['<corpus>']) as f:
         tokens_num = 0
-        print (str(int(tokens_num/1000**2)) + "M tokens processed.")
         for line in f:
-            print ("\x1b[1A" + str(int(tokens_num/1000**2)) + "M tokens processed.") #ANSI
+            sys.stdout.write("\r" + str(int(tokens_num/1000**2)) + "M tokens processed.") #ANSI
             tokens = line.strip().split()
             tokens_num += len(tokens)
             for pos in range(len(tokens)):            
