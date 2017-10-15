@@ -39,11 +39,10 @@ def main():
     print ('vocabulary size: ' + str(len(vocab)))
     with open(args['<corpus>']) as f:
         line_num = 0
-        print (str(int(line_num/1000**1)) + "K lines processed.")
         for line in f:
             line_num += 1
             if ((line_num) % 1000) == 0:
-                print ("\x1b[1A" + str(int(line_num/1000)) + "K lines processed.")
+                sys.stdout.write("\r" + str(int(line_num/1000)) + "K lines processed.")
             line2features(line, args, vocab, pairs_file, sub, subsampler)
 
     pairs_file.close()
