@@ -4,8 +4,9 @@ from docopt import docopt
 import multiprocessing
 from corpus2vocab import getNgram
 from representations.matrix_serializer import load_count_vocabulary
-import sys
 import six
+import sys
+from line2features import ngram_ngram, word_word, word_text, word_wordLR, word_wordPos
 
 
 def main():
@@ -57,53 +58,15 @@ def c2p(args, tid):
             line_num += 1
             if ((line_num) % 1000) == 0 and tid == 0:
                 sys.stdout.write("\r" + str(int(line_num/1000)) + "K lines processed.")
+                sys.stdout.flush()
             if line_num % threads_num != tid:
                 continue
-            line2features(line, args, vocab, pairs_file, sub, subsampler)
+            ngram_ngram(line, args, vocab, pairs_file, sub, subsampler)
+            # word_word(line, args, vocab, pairs_file, sub, subsampler)
+            # word_text(line, args, vocab, pairs_file, sub, subsampler, line_num)
+            # word_wordPos(line, args, vocab, pairs_file, sub, subsampler)
 
     pairs_file.close()
-                        
-
-def check_word(t, vocab, sub, subsampler, rnd): #discard tokens
-    if t is None:
-        return None
-    if sub:
-        t = t if t not in subsampler or rnd.random() > subsampler[t] else None
-        if t is None:
-            return None
-    t = t if t in vocab else None
-    return t
-
-
-def line2features(line, args, vocab, pairs_file, sub, subsampler):
-    win = int(args['--win'])
-    ngram_word = int(args['--ngram_word'])
-    ngram_context = int(args['--ngram_context'])
-    overlap = args['--overlap']
-    rnd = Random(17)
-    tokens = line.strip().split()
-    for i in range(len(tokens)): #loop for each position in a line
-        for gram_word in range(1, ngram_word+1): #loop for grams of different orders in (center) word 
-            word = getNgram(tokens, i, gram_word)
-            word = check_word(word, vocab, sub, subsampler, rnd)
-            if word is None:
-                continue
-            for gram_context in range(1, ngram_context+1): #loop for grams of different orders in context
-                start = i - win + gram_word - 1
-                end = i + win - gram_context + 1
-                for j in range(start, end + 1):
-                    if overlap:
-                        if i == j and gram_word == gram_context:
-                            continue
-                    else:
-                        if len(set(range(i, i + gram_word)) & set(range(j, j + gram_context))) > 0:
-                            continue
-                    context = getNgram(tokens, j, gram_context)
-                    context = check_word(context, vocab, sub, subsampler, rnd)
-                    if context is None:
-                        continue
-                    pairs_file.write(word + ' ' + context + "\n") #write pairs to the file
-
 
 
 if __name__ == '__main__':
