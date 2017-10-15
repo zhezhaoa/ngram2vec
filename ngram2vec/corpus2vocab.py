@@ -28,7 +28,8 @@ def main():
     with open(args['<corpus>']) as f:
         tokens_num = 0
         for line in f:
-            sys.stdout.write("\r" + str(int(tokens_num/1000**2)) + "M tokens processed.") #ANSI
+            sys.stdout.write("\r" + str(int(tokens_num/1000**2)) + "M tokens processed.")
+            sys.stdout.flush()
             tokens = line.strip().split()
             tokens_num += len(tokens)
             for pos in range(len(tokens)):            
