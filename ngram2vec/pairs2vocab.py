@@ -1,6 +1,7 @@
 from docopt import docopt
 from representations.matrix_serializer import save_count_vocabulary
 import six
+import sys
 
 def main():
     args = docopt("""
@@ -17,11 +18,11 @@ def main():
     contexts = {} #context vocabulary
     with open(args['<pairs>']) as f:
         pairs_num = 0
-        print (str(int(pairs_num/1000**2)) + "M pairs processed.")
         for line in f:
             pairs_num += 1
             if pairs_num % 1000**2 == 0:
-                print ("\x1b[1A" + str(int(pairs_num/1000**2)) + "M pairs processed.")
+                sys.stdout.write("\r" + str(int(pairs_num/1000**2)) + "M pairs processed.")
+                sys.stdout.flush()
             pair = line.strip().split()
             if pair[0] not in words :
                 words[pair[0]] = 1
