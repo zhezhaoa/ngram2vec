@@ -42,6 +42,7 @@ Besides English word analogy and similarity datasets, we provide several **Chine
 
 ## Some comments
 
+We put source code in ngram2vec directory. We also provide simplified version of implementation for tutorial in ngram2vec/simplified directory. Run demo_simplified.sh(demo_simplified.bat) in Linux/Mac(Windows) to see how this toolkit works<br>
 **corpus2vocab** builds ngram vocabulary from corpus<br>
 **corpus2pairs** extracts ngram (feature) pairs from corpus (multi-threading implementation), used by SGNS model<br>
 **line2features** extracts ngram (feature) pairs from a line, called by corpus2pairs. Add contents to this file if you want to try different contexts<br>
