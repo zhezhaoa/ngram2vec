@@ -43,13 +43,14 @@ Besides English word analogy and similarity datasets, we provide several **Chine
 ## Some comments
 
 **corpus2vocab** builds ngram vocabulary from corpus<br>
-**corpus2pairs** extracts ngram pairs from corpus (multi-threading implementation), used by SGNS model<br>
+**corpus2pairs** extracts ngram (feature) pairs from corpus (multi-threading implementation), used by SGNS model<br>
+**line2features** extracts ngram (feature) pairs from a line, called by corpus2pairs. Add contents to this file if you want to try different contexts<br>
 **pairs2vocab** generates center word vocabulary and context vocabulary, which are used by all models. (note that the two vocabularies are different. In `uni_bi` case, center word vocabulary only contains words while context vocabulary contains both words and bigrams)<br>
 **pairs2counts** builds co-occurrence matrix from pairs. We accelerate this stage by using mixed and stripes strategies. By now we only upload a coarse version and we will continue improving this code<br>
 **counts2ppmi** learns PPMI matrix from counts<br>
 **counts2shuf** shuffles the counts<br>
 **counts2bin** transfers counts into binary format, which is supported by glove<br>
-**word2vecf** supports arbitrary context features (implemented by Yoav Goldberg), which is used to train SGNS model. We also re-implement word2vecf in python, which is much easier to read compared with C version. One hundred lines are enough to implement word2vecf in python (including training in multiple processes, print detailed infomation, reading pairs & vocab and etc.). Another advantage is that word2vecf in python can run on Windows. The disadvantage is that word2vecf in python is slower compared with C version<br>
+**word2vecf** supports arbitrary context features (implemented by Yoav Goldberg), which is used to train SGNS model. We also re-implement word2vecf in python, which is much easier to read compared with C version. One hundred lines are enough to implement word2vecf in python (including training in multiple processes, print detailed infomation, reading pairs & vocab and etc.)<br>
 **glovef** supports arbitrary context features. In spirit of word2vecf, we implement glovef upon glove
 
 ## References
@@ -74,5 +75,5 @@ I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei 
 We are looking forward to receiving your questions and advice to this toolkit. We will reply you as soon as possible. We will further perfect this toolkit in a few weeks, including reimplement word2vecf and glovef in python and open line2features interface to better support adding arbitrary features.<br>  
 Zhe Zhao, helloworld@ruc.edu.cn , https://zhezhaoa.github.io/<br>
 Bofang Li, libofang@ruc.edu.cn<br>
-Shen Li, shen@mail.bnu.edu.cn
+Shen Li, shen@mail.bnu.edu.cn<br>
 Renfen Hu, irishere@mail.bnu.edu.cn
