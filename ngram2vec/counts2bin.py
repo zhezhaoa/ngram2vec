@@ -3,6 +3,7 @@ from scipy.sparse import dok_matrix, csr_matrix
 import numpy as np
 import random
 import struct
+import sys
 
 
 def main():
@@ -18,9 +19,9 @@ def main():
     bin_file = open(args['<output>'], 'wb')
     with open(args['<counts>'], 'r') as f:
         counts_num = 0
-        print str(counts_num/1000**2) + "M tokens processed."
         for line in f:
-            print "\x1b[1A" + str(counts_num/1000**2) + "M tokens processed."
+            if counts_num % 1000 == 0:
+                sys.stdout.write("\r" + str(counts_num/1000**2) + "M tokens processed.")
             counts_num += 1
             word, context, count = line.strip().split()
             b = struct.pack('iid', int(word), int(context), float(count))

@@ -3,6 +3,7 @@ from scipy.sparse import dok_matrix, csr_matrix
 import numpy as np
 import random
 from sys import getsizeof
+import sys
 import os
 
 from representations.matrix_serializer import save_matrix, save_vocabulary, load_vocabulary
@@ -14,7 +15,7 @@ def main():
         counts2shuf.py [options] <counts> <output>
     
     Options:
-        --memory_size NUM        Memory size available [default: 2.0]
+        --memory_size NUM        Memory size available [default: 8.0]
     """)
     
     print "**********************"
@@ -27,9 +28,9 @@ def main():
     tmp_id = 0
     with open(args['<counts>'], 'r') as f:
         counts_num = 0
-        print str(counts_num/1000**2) + "M counts processed."
         for line in f:
-            print "\x1b[1A" + str(counts_num/1000**2) + "M counts processed."
+            if counts_num % 1000 == 0:
+                sys.stdout.write("\r" + str(counts_num/1000**2) + "M counts processed.")
             counts_num += 1
             word, context, count = line.strip().split()
             counts.append((int(word), int(context), float(count)))
@@ -59,14 +60,14 @@ def main():
         tmpfiles.append(open(args['<output>'] + str(i), 'r'))
     
     tmp_num = counts_num_per_file[0] / tmp_id
-    print str(counts_num/1000**2) + "M counts processed."
     for i in xrange(tmp_id - 1):
         counts = []
         for f in tmpfiles:
             for j in xrange(tmp_num):
                 line = f.readline()
                 if len(line) > 0:
-                    print "\x1b[1A" + str(counts_num/1000**2) + "M counts processed."
+                    if counts_num % 1000 == 0:
+                        sys.stdout.write("\r" + str(counts_num/1000**2) + "M counts processed.")
                     counts_num += 1
                     word, context, count = line.strip().split()
                     counts.append((int(word), int(context), float(count)))
@@ -76,7 +77,8 @@ def main():
     counts = []
     for f in tmpfiles:
         for line in f:
-            print "\x1b[1A" + str(counts_num/1000**2) + "M counts processed."
+            if counts_num % 1000 == 0:
+                sys.stdout.write("\r" + str(counts_num/1000**2) + "M counts processed.")
             counts_num += 1
             word, context, count = line.strip().split()
             counts.append((int(word), int(context), float(count)))
