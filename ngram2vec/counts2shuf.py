@@ -49,6 +49,8 @@ def main():
             f.write(str(count[0]) + ' ' + str(count[1]) + ' ' + str(count[2]) + '\n')
         counts = []
         tmp_id += 1
+    if tmp_id == 1:
+        counts_num_per_file.append(counts_num)
 
     print "number of tmpfiles: ", tmp_id 
 
