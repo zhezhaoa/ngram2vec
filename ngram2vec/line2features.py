@@ -1,4 +1,5 @@
 from random import Random
+import random
 from corpus2vocab import getNgram
 
 
@@ -32,13 +33,16 @@ def ngram_ngram(line, args, vocab, pairs_file, sub, subsampler):
                     pairs_file.write(word + ' ' + context + "\n") #write pairs to the file
 
 
-def word_word(line, args, vocab, pairs_file, sub, subsampler):
+def word_word(line, args, vocab, pairs_file, sub, subsampler): #identical to the word2vec toolkit; dynamic and dirty window!
     win = int(args['--win'])
+    win = random.randint(1, win) #dynamic window
     rnd = Random(17)
-    tokens = line.strip().split()
+    tokens = [t if t in vocab else None for t in line.strip().split()]
+    if sub:
+        tokens = [t if t not in subsampler or rnd.random() > subsampler[t] else None for t in tokens]
+    tokens = [t for t in tokens if t is not None] #dirty window
     for i in range(len(tokens)): #loop for each position in a line
         word = getNgram(tokens, i, 1)
-        word = check_word(word, vocab, sub, subsampler, rnd)
         if word is None:
             continue
         start = i - win
@@ -47,7 +51,6 @@ def word_word(line, args, vocab, pairs_file, sub, subsampler):
             if i == j:
                 continue
             context = getNgram(tokens, j, 1)
-            context = check_word(context, vocab, sub, subsampler, rnd)
             if context is None:
                 continue
             pairs_file.write(word + ' ' + context + "\n")
