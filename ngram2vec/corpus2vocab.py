@@ -13,14 +13,16 @@ def main():
     Options:
         --ngram NUM              Vocabulary includes grams of 1st to nth order [default: 1]
         --memory_size NUM        Memory size available [default: 8.0]
-        --min_count NUM          Ignore words below a threshold [default: 10]
+        --min_count NUM          Ignore word below a threshold [default: 10]
+        --max_length NUM         Ignore word whose length exceeds a threshold [default: 50]
     """)
 
-    print ("**********************")
+    print ("*********************************")
     print ("corpus2vocab")
     ngram = int(args['--ngram'])
-    memory_size = float(args['--memory_size']) * 1000**3
+    memory_size = float(args['--memory_size']) / 2 * 1000**3 #memory size is divided by 2 since we have to read both word and context vocabulary into memory in pairs2vocab step
     min_count = int(args['--min_count'])
+    max_length = int(args['--max_length'])
     vocab = {} # vocabulary (stored by dictionary)
     reduce_thr = 1 # remove low-frequency words when memory is insufficient
     memory_size_used = 0 # size of memory used by keys & values in dictionary (not include dictionary itself) 
@@ -36,6 +38,8 @@ def main():
                 for gram in range(1, ngram+1):
                     token = getNgram(tokens, pos, gram)
                     if token is None :
+                        continue
+                    if len(token) > max_length:
                         continue
                     if token not in vocab :
                         memory_size_used += getsizeof(token)
