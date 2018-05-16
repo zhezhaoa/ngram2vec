@@ -1,14 +1,16 @@
 from random import Random
-import random
 from corpus2vocab import getNgram
 
 
 def ngram_ngram(line, args, vocab, pairs_file, sub, subsampler):
+    rnd = Random(17)
     win = int(args['--win'])
     ngram_word = int(args['--ngram_word'])
     ngram_context = int(args['--ngram_context'])
     overlap = args['--overlap']
-    rnd = Random(17)
+    dynamic = args['--dynamic_win']
+    if dynamic:
+        win = rnd.randint(1, win) #dynamic window
     tokens = line.strip().split()
     for i in range(len(tokens)): #loop for each position in a line
         for gram_word in range(1, ngram_word+1): #loop for grams of different orders in (center) word 
@@ -34,9 +36,9 @@ def ngram_ngram(line, args, vocab, pairs_file, sub, subsampler):
 
 
 def word_word(line, args, vocab, pairs_file, sub, subsampler): #identical to the word2vec toolkit; dynamic and dirty window!
-    win = int(args['--win'])
-    win = random.randint(1, win) #dynamic window
     rnd = Random(17)
+    win = int(args['--win'])
+    win = rnd.randint(1, win) #dynamic window
     tokens = [t if t in vocab else None for t in line.strip().split()]
     if sub:
         tokens = [t if t not in subsampler or rnd.random() > subsampler[t] else None for t in tokens]
@@ -52,6 +54,41 @@ def word_word(line, args, vocab, pairs_file, sub, subsampler): #identical to the
                 continue
             context = getNgram(tokens, j, 1)
             if context is None:
+                continue
+            pairs_file.write(word + ' ' + context + "\n")
+
+
+def word_character(line, args, vocab, pairs_file, sub, subsampler): #identical to the word2vec toolkit; dynamic and dirty window!
+    rnd = Random(17)
+    char_range = (int(args['--ngram_char_low']), int(args['--ngram_char_up'])) #character range
+    win = int(args['--win'])
+    dynamic = args['--dynamic_win']
+    if dynamic:
+        win = rnd.randint(1, win) #dynamic window
+    tokens = [t if t in vocab else None for t in line.strip().split()]
+    if sub:
+        tokens = [t if t not in subsampler or rnd.random() > subsampler[t] else None for t in tokens]
+    for i in range(len(tokens)): #loop for each position in a line
+        word = getNgram(tokens, i, 1)
+        if word is None:
+            continue
+        start = i - win
+        end = i + win
+        for j in range(start, end + 1):
+            context = getNgram(tokens, j, 1)
+            if context is None:
+                continue
+            if i == j:
+                characters = []
+                for character in context.decode('utf-8'):
+                    characters.append(character)
+                for char_ngram in range(char_range[0], char_range[1] + 1):
+                    for char_start in range(len(characters)):
+                        char_end = char_start + char_ngram
+                        if char_end > len(characters):
+                            break
+                        pairs_file.write(word + ' ' + ''.join([char.encode('utf-8') for char in characters[char_start: char_end]]) + "\n") 
+   
                 continue
             pairs_file.write(word + ' ' + context + "\n")
 

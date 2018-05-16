@@ -6,7 +6,7 @@ from corpus2vocab import getNgram
 from representations.matrix_serializer import load_count_vocabulary
 import six
 import sys
-from line2features import ngram_ngram, word_word, word_text, word_wordLR, word_wordPos
+from line2features import ngram_ngram, word_word, word_character, word_text, word_wordLR, word_wordPos
 
 
 def main():
@@ -15,15 +15,19 @@ def main():
         corpus2pairs.py [options] <corpus> <vocab> <pairs>
 
     Options:
+        --feature STR              Co-occurrence types used for training [default: ngram-ngram] 
         --win NUM                  Window size [default: 2]
         --sub NUM                  Subsampling threshold [default: 0]
-        --ngram_word NUM           (Center) word vocabulary includes grams of 1st to nth order [default: 1]
+        --ngram_word NUM           Word vocabulary includes grams of 1st to nth order [default: 1]
         --ngram_context NUM        Context vocabulary includes grams of 1st to nth order [default: 1]
+        --ngram_char_low NUM       The low bound of character ngram [default: 1]
+        --ngram_char_up NUM        The up bound of character ngram [default: 4]
         --threads_num NUM          The number of threads [default: 8]
         --overlap                  Whether overlaping pairs are allowed or not
+        --dynamic_win              Whether dynamic window is allowed or not
     """)
 
-    print ("**********************")
+    print ("*********************************")
     print ("corpus2pairs")
     threads_num = int(args['--threads_num'])
     threads_list = []
@@ -38,9 +42,11 @@ def main():
 
 def c2p(args, tid):
     pairs_file = open(args['<pairs>']+"_"+str(tid), 'w')
+    feature = args['--feature'] #features, also known as co-occurrence types, are critical to the property of word representations. Supports ngram-ngram, word-word, word-character, and so on.
     threads_num = int(args['--threads_num'])
     subsample = float(args['--sub'])
     sub = subsample != 0
+
     vocab = load_count_vocabulary(args['<vocab>']) #load vocabulary (generated in corpus2vocab stage)
     train_uni_num = 0 #number of (unigram) tokens in corpus
     for w, c in six.iteritems(vocab):
@@ -61,8 +67,14 @@ def c2p(args, tid):
                 sys.stdout.flush()
             if line_num % threads_num != tid:
                 continue
-            ngram_ngram(line, args, vocab, pairs_file, sub, subsampler)
-            # word_word(line, args, vocab, pairs_file, sub, subsampler)
+            if feature == 'ngram-ngram':
+                ngram_ngram(line, args, vocab, pairs_file, sub, subsampler)
+            elif feature == 'word-word': #identical to word2vec
+                word_word(line, args, vocab, pairs_file, sub, subsampler)
+            elif feature == 'word-character': # similar with fasttext
+                word_character(line, args, vocab, pairs_file, sub, subsampler)
+            else:
+                break
             # word_text(line, args, vocab, pairs_file, sub, subsampler, line_num)
             # word_wordPos(line, args, vocab, pairs_file, sub, subsampler)
 
