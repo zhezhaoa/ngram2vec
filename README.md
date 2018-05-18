@@ -69,12 +69,13 @@ We put source code in ngram2vec directory. We also provide simplified version of
 This toolkit is inspired by Omer Levy's work http://bitbucket.org/omerlevy/hyperwords<br>
 We reuse part of his code in this toolkit. We also thank him for his kind suggestions.<br>
 We build glovef upon glove https://github.com/stanfordnlp/GloVe<br>
-I can not finish this toolkit without the help from Bofang Li, Shen Li, Jianwei Cui in XiaoMi, and my tutors Tao Liu & Xiaoyong Du
+I can not finish this toolkit without the help from Bofang Li, Shen Li, [Prof. Ju Fan](http://info.ruc.edu.cn/academic_professor.php?teacher_id=162), and Jianwei Cui in Xiaomi<br>
+My tutors are [Tao Liu](http://info.ruc.edu.cn/academic_professor.php?teacher_id=46) and [Xiaoyong Du](http://info.ruc.edu.cn/academic_professor.php?teacher_id=57)
 
 ## Contact us
 
 We are looking forward to receiving your questions and advice to this toolkit. We will reply you as soon as possible. We will further perfect this toolkit in a few weeks, including reimplement word2vecf and glovef in python and open line2features interface to better support adding arbitrary features.<br>  
-Zhe Zhao, helloworld@ruc.edu.cn , https://zhezhaoa.github.io/<br>
+[Zhe Zhao](https://zhezhaoa.github.io/), helloworld@ruc.edu.cn, from [DBIIR lab](http://iir.ruc.edu.cn/index.jsp)<br>
 Bofang Li, libofang@ruc.edu.cn<br>
 Shen Li, shen@mail.bnu.edu.cn<br>
 Renfen Hu, irishere@mail.bnu.edu.cn
