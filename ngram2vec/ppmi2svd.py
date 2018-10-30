@@ -1,31 +1,48 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function, unicode_literals, division
+import argparse
+import codecs
 from sparsesvd import sparsesvd
-from docopt import docopt
 import numpy as np
-from representations.explicit import PositiveExplicit
+from utils.matrix import load_sparse, save_dense
+from utils.vocabulary import load_vocabulary
+from utils.misc import normalize
 
 
 def main():
-    args = docopt("""
-    Usage:
-        ppmi2svd.py [options] <ppmi> <output>
-    
-    Options:
-        --dim NUM    Dimensionality of eigenvectors [default: 300]
-        --neg NUM    Number of negative samples; subtracts its log from PMI [default: 1]
-    """)
-    
-    ppmi_path = args['<ppmi>']
-    output_path = args['<output>']
-    dim = int(args['--dim'])
-    neg = int(args['--neg'])
-    
-    explicit = PositiveExplicit(ppmi_path, normalize=False, neg=neg)
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--ppmi_file", type=str, required=True,
+                        help="Path to the counts (matrix) file.")
+    parser.add_argument("--svd_file", type=str, required=True,
+                        help="Path to the SVD file.")
+    parser.add_argument("--input_vocab_file", type=str, required=True,
+                        help="Path to the input vocabulary file.")
+    parser.add_argument("--output_vocab_file", type=str, required=True,
+                        help="Path to the output vocabulary file.")
 
-    ut, s, vt = sparsesvd(explicit.m.tocsc(), dim)
+    parser.add_argument("--size", type=int, default=100,
+                        help="Vector size.")
+    parser.add_argument("--normalize", action="store_true",
+                        help="If set, we factorize normalized PPMI matrix")
 
-    np.save(output_path + '.ut.npy', ut)
-    np.save(output_path + '.s.npy', s)
-    np.save(output_path + '.vt.npy', vt)
+    args = parser.parse_args()
+
+    print("Ppmi2svd")
+    input_vocab, _ = load_vocabulary(args.input_vocab_file)
+    output_vocab, _ = load_vocabulary(args.output_vocab_file)
+    ppmi, _, _ = load_sparse(args.ppmi_file)
+    if args.normalize:
+        ppmi = normalize(ppmi, sparse=True)
+    ut, s, vt = sparsesvd(ppmi.tocsc(), args.size)    
+
+    np.save(args.svd_file + ".ut.npy", ut)
+    np.save(args.svd_file + ".s.npy", s)
+    np.save(args.svd_file + ".vt.npy", vt)
+
+    save_dense(args.svd_file + ".input", ut.T, input_vocab)
+    save_dense(args.svd_file + ".output", vt.T, output_vocab)
+    print("Ppmi2svd finished")
 
 
 if __name__ == '__main__':

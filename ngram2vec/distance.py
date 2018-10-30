@@ -1,60 +1,71 @@
-from docopt import docopt
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function, unicode_literals
+import argparse
+import codecs
 import numpy as np
-from text2numpy import read_vectors
+from scipy.stats.stats import spearmanr
+import sys
+from six.moves import input
+from utils.misc import normalize
+from utils.matrix import load_dense_txt, load_sparse_txt
+from eval.testset import load_analogy, get_ana_vocab
+from eval.similarity import prepare_similarities
+from eval.recast import retain_words, align_matrix
 
 
 def main():
-    args = docopt("""
-    Usage:
-        distance.py [options] <path>
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--vector_file", type=str, required=True,
+                        help="Path to the vector file.")
+    parser.add_argument('--sparse', action='store_true',
+                        help="Load sparse representation.")
+    parser.add_argument('--normalize', action='store_true',
+                        help="If set, vector is normalized.")
+    parser.add_argument("--top_num", type=int, default=10,
+                        help="The number of neighbours returned.")
 
-    Options:
-        --return_num NUM        Number of nearest neighbours returned [default: 50]
-        --ngram NUM             Order of grams returened (0: return all grams) [default: 0]
-    """)
+    args = parser.parse_args()
     
-    path = args['<path>']  
-    return_num = int(args['--return_num'])
-    ngram = int(args['--ngram'])
-    join_str = "@$"
-    vectors = read_vectors(path)
-    index2word = vectors.keys()
-    for w in index2word:
-        vectors[w] = vectors[w]/np.sqrt((vectors[w]**2).sum())
+    if args.sparse:
+        matrix, vocab, _ = load_sparse_txt(args.vector_file)
+    else:
+        matrix, vocab, _ = load_dense_txt(args.vector_file)
+    
+    if args.normalize:
+        matrix = normalize(matrix, args.sparse)
+    top_num = args.top_num
 
     while(True):
-        target = raw_input("Enter word or ngram (EXIT to break): ")
-        target = join_str.join(target.strip().split())
+        target = input("Enter a word (EXIT to break): ")
         if target == "EXIT":
             break
-    	if target not in index2word:
-            print "Out of vocabulary word or ngram"
+        if target not in vocab["i2w"]:
+            print("Out of vocabulary")
             continue
-        target_vector = vectors[target]
-        words_top = []
-        for w in index2word:
-            if ngram == 0:
-                pass
-            else:
-                if ngram != w.count(join_str) + 1:
-                    continue
+        target_vocab = {}
+        target_vocab["i2w"], target_vocab["w2i"] = [target],  {target: 0}
+        sim_matrix = prepare_similarities(matrix, target_vocab, vocab, args.sparse)
+        neighbours = []
+        for i, w in enumerate(vocab["i2w"]):
+            sim = sim_matrix[0, i]
             if target == w:
                 continue
-            sim = target_vector.dot(vectors[w])
-            if len(words_top) == 0:
-                words_top.append((w, sim))
+            if len(neighbours) == 0:
+                neighbours.append((w, sim))
                 continue
-            if sim <= words_top[len(words_top)-1][1] and len(words_top) >= return_num:
+            if sim <= neighbours[-1][1] and len(neighbours) >= top_num:
                 continue
-            for i in range(len(words_top)):
-                if sim > words_top[i][1]:
+            for j in range(len(neighbours)):
+                if sim > neighbours[j][1]:
+                    neighbours.insert(j, (w, sim))
                     break
-            words_top.insert(i, (w, sim))
-            if len(words_top) > return_num:
-                words_top.pop(-1)
-        print "words                cosine distance"
-        for w, sim in words_top:
-            print ("%-20s %-8.5f"%(w, sim))
+            if len(neighbours) > top_num:
+                neighbours.pop(-1)
+
+        print("{0: <20} {1: <20}".format("word", "similarity"))
+        for w, sim in neighbours:
+            print("{0: <20} {1: <20}".format(w, sim))
 
 
 if __name__ == '__main__':

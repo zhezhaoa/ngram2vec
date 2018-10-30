@@ -8,19 +8,19 @@ from scipy.stats.stats import spearmanr
 import sys
 from utils.misc import normalize
 from utils.matrix import load_dense, load_sparse
-from eval.testset import load_analogy, get_ana_vocab
-from eval.similarity import prepare_similarities
-from eval.recast import retain_words, align_matrix
+from eval.testset import load_similarity
+from eval.similarity import similarity
+from eval.recast import align_matrix
 
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--input_vector_file", type=str, required=True,
-                        help="")
+                        help="Path to the input vector file.")
     parser.add_argument("--output_vector_file", type=str,
-                        help="")
+                        help="Path to the output vector file.")
     parser.add_argument("--test_file", type=str, required=True,
-                        help="")
+                        help="Path to the similarity task.")
     parser.add_argument('--sparse', action='store_true',
                         help="Load sparse representation.")
     parser.add_argument('--normalize', action='store_true',
@@ -34,9 +34,7 @@ def main():
 
     args = parser.parse_args()
     
-    testset = load_analogy(args.test_file)
-    ana_vocab, vocab = {}, {}
-    ana_vocab["i2w"], ana_vocab["w2i"] = get_ana_vocab(testset)
+    testset = load_similarity(args.test_file)
     if args.sparse:
         matrix, vocab, _ = load_sparse(args.input_vector_file)
     else:
@@ -53,49 +51,20 @@ def main():
             matrix = np.concatenate([matrix, output_matrix], axis=1)
         elif args.ensemble == "output":
             matrix, vocab, _ = load_dense(args.output_vector_file)
-        else: # args.ensemble == "input"
+        else: # args.ensemble == "input":
             pass
 
     if args.normalize:
         matrix = normalize(matrix, args.sparse)
 
-    matrix, vocab["i2w"], vocab["w2i"] = retain_words(matrix, vocab["i2w"], vocab["w2i"])
-    sim_matrix = prepare_similarities(matrix, ana_vocab, vocab, sparse=args.sparse)
-
-    seen, correct_add, correct_mul = 0, 0, 0
-    for a, a_, b, b_ in testset:
-        if a not in vocab["i2w"] or a_ not in vocab["i2w"] or b not in vocab["i2w"]:
-            continue
-        seen += 1
-        guess_add, guess_mul = guess(sim_matrix, ana_vocab, vocab, a, a_, b)
-        if guess_add == b_:
-            correct_add += 1
-        if guess_mul == b_:
-            correct_mul += 1
-    accuracy_add = float(correct_add) / seen
-    accuracy_mul = float(correct_mul) / seen
-    print("seen/total: {}/{}".format(seen, len(testset)))
-    print("{}: {:.3f} {:.3f}".format(args.test_file, accuracy_add, accuracy_mul))
-
-
-def guess(sim_matrix, ana_vocab, vocab, a, a_, b):
-    sa = sim_matrix[ana_vocab["w2i"][a]]
-    sa_ = sim_matrix[ana_vocab["w2i"][a_]]
-    sb = sim_matrix[ana_vocab["w2i"][b]]
-    
-    sim_add = sa_ + sb - sa
-    sim_add[vocab["w2i"][a]] = 0
-    sim_add[vocab["w2i"][a_]] = 0
-    sim_add[vocab["w2i"][b]] = 0
-    guess_add = vocab["i2w"][np.nanargmax(sim_add)]
-    
-    sim_mul = sa_ * sb * np.reciprocal(sa+0.01)
-    sim_mul[vocab["w2i"][a]] = 0
-    sim_mul[vocab["w2i"][a_]] = 0
-    sim_mul[vocab["w2i"][b]] = 0
-    guess_mul = vocab["i2w"][np.nanargmax(sim_mul)]
-    
-    return guess_add, guess_mul
+    results = []
+    for (w1, w2), sim_expected in testset:
+        sim_actual = similarity(matrix, vocab["w2i"], w1, w2, args.sparse)
+        if sim_actual is not None:
+            results.append((sim_actual, sim_expected))
+    actual, expected = zip(*results)
+    print("seen/total: {}/{}".format(len(results), len(testset)))
+    print("{}: {:.3f}".format(args.test_file, spearmanr(actual, expected)[0]))
 
 
 if __name__ == '__main__':
