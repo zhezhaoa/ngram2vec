@@ -1,75 +1,79 @@
-from docopt import docopt
-from representations.matrix_serializer import save_count_vocabulary
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function, unicode_literals, division
+import argparse
+import codecs
 from sys import getsizeof
-import sys
 import six
+from utils.vocabulary import save_count_vocabulary
+import line2vocab
 
 
 def main():
-    args = docopt("""
-    Usage:
-        corpus2vocab.py [options] <corpus> <output>
-    
-    Options:
-        --ngram NUM              Vocabulary includes grams of 1st to nth order [default: 1]
-        --memory_size NUM        Memory size available [default: 8.0]
-        --min_count NUM          Ignore word below a threshold [default: 10]
-        --max_length NUM         Ignore word whose length exceeds a threshold [default: 50]
-    """)
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("--corpus_file", type=str, required=True,
+                        help="Path to the corpus file.")
+    parser.add_argument("--vocab_file", type=str, required=True,
+                        help="Path to the vocab file.")
 
-    print ("*********************************")
-    print ("corpus2vocab")
-    ngram = int(args['--ngram'])
-    memory_size = float(args['--memory_size']) / 2 * 1000**3 #memory size is divided by 2 since we have to read both word and context vocabulary into memory in pairs2vocab step
-    min_count = int(args['--min_count'])
-    max_length = int(args['--max_length'])
-    vocab = {} # vocabulary (stored by dictionary)
-    reduce_thr = 1 # remove low-frequency words when memory is insufficient
-    memory_size_used = 0 # size of memory used by keys & values in dictionary (not include dictionary itself) 
+    parser.add_argument("--feature", type=str, default="word",
+                        choices=["word", "ngram"],
+                        help="""Type of linguistic units (features) to use.
+                        More types will be added. Options are
+                        [word|ngram].""")
+    parser.add_argument("--min_count", type=int, default=100,
+                        help="Threshold for removing low-frequency features (units).")
+    parser.add_argument("--max_length", type=int, default=50,
+                        help="Threshold for removing features (units) with too much characters.")
+    parser.add_argument("--memory_size", type=float, default=4.0,
+                        help="""Memory size. Sometimes the vocabulary is large. 
+                        We remove low-frequency features to ensure that vocabulary could be stored in memory.""")
 
-    with open(args['<corpus>']) as f:
-        tokens_num = 0
+    parser.add_argument("--order", type=int, default=2,
+                        help="Order of word-level ngram if --feature is set to ngram")
+
+    args = parser.parse_args()
+
+    print("Corpus2vocab")
+    vocab = {}
+    memory_size = args.memory_size * 1000**3
+    memory_size_used = 0.0
+    reduce_thr = 1
+    tokens_num = 0
+    with codecs.open(args.corpus_file, "r", "utf-8") as f:
         for line in f:
-            sys.stdout.write("\r" + str(int(tokens_num/1000**2)) + "M tokens processed.")
-            sys.stdout.flush()
-            tokens = line.strip().split()
-            tokens_num += len(tokens)
-            for pos in range(len(tokens)):            
-                for gram in range(1, ngram+1):
-                    token = getNgram(tokens, pos, gram)
-                    if token is None :
-                        continue
-                    if len(token) > max_length:
-                        continue
-                    if token not in vocab :
-                        memory_size_used += getsizeof(token)
-                        vocab[token] = 1
-                        if memory_size_used + getsizeof(vocab) > memory_size * 0.8: #reduce vocabulary when memory is insufficient
-                            reduce_thr += 1
-                            vocab_size = len(vocab)
-                            vocab = {w: c for w, c in six.iteritems(vocab) if c >= reduce_thr}
-                            memory_size_used *= float(len(vocab)) / vocab_size #estimate the size of memory used
-                    else:
-                        vocab[token] += 1
+            print("\r{}M tokens processed.".format(int(tokens_num/1000**2)), end="")
+            # Extract linguistic features (units) from a line.
+            line_vocab = getattr(line2vocab, args.feature)(line, args)
+            tokens_num += len(line.strip().split())
+            for word, count in line_vocab.items():
+                if len(word) > args.max_length:
+                    continue
+                if word not in vocab:
+                    vocab[word] = count
+                    memory_size_used += getsizeof(word)
+                    # Remove low-frequency features when 30% memory is used up.
+                    # One can use any value between 0 and 1. 0.3 is a safe value.
+                    if memory_size_used + getsizeof(vocab) > memory_size * 0.3:
+                        reduce_thr += 1
+                        vocab_size = len(vocab)
+                        vocab = {w: c for w, c in six.iteritems(vocab) if c >= reduce_thr}
+                        # Reestimate memory size used.
+                        memory_size_used *= len(vocab) / vocab_size
+                else:
+                    vocab[word] += count
 
-    vocab = {w: c for w, c in six.iteritems(vocab) if c >= min_count} #remove low-frequency words by pre-specified threshold, using six for bridging the gap between python 2 and 3
-    vocab = sorted(six.iteritems(vocab), key=lambda item: item[1], reverse=True) #sort vocabulary by frequency in descending order
-    save_count_vocabulary(args['<output>'], vocab)
-    print ("number of tokens: " + str(tokens_num))
-    print ("vocab size: " + str(len(vocab)))
-    print ("low-frequency threshold: " + str(min_count if min_count > reduce_thr else reduce_thr))
-    print ("corpus2vocab finished")
+    # Reduce vocabulary.
+    vocab = {w: c for w, c in six.iteritems(vocab) if c >= args.min_count}
+    # Sort vocabulary.
+    vocab = sorted(six.iteritems(vocab), key=lambda item: item[1], reverse=True)
+    save_count_vocabulary(args.vocab_file, vocab)
 
-
-def getNgram(tokens, pos, gram): #uni:gram=1  bi:gram=2 tri:gram=3
-    if pos < 0:
-        return None
-    if pos + gram > len(tokens):
-        return None
-    token = tokens[pos]
-    for i in range(1, gram):
-        token = token + "@$" + tokens[pos + i]
-    return token
+    print ()
+    print ("Number of tokens: {}".format(tokens_num))
+    print ("Size of vocabulary: {}".format(len(vocab)))
+    print ("Low-frequency threshold: {}".format(args.min_count if args.min_count > reduce_thr else reduce_thr))
+    print ("Corpus2vocab finished")
 
 
 if __name__ == '__main__':
