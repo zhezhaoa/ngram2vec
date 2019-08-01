@@ -50,10 +50,10 @@ def ngram_ngram(line, vocab, subsampler, random, args):
                 end = i + win - k + 1
                 for l in range(start, end + 1):
                     if overlap:
-                        if i == l and input_order == output_order:
+                        if i == l and j == k:
                             continue
                     else:
-                        if len(set(range(i, i + input_order)) & set(range(l, l + output_order))) > 0:
+                        if len(set(range(i, i + j)) & set(range(l, l + k))) > 0:
                             continue
                     output = get_ngram(tokens, l, k)
                     output = check_feature(output, vocab, subsampler, random)
