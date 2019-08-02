@@ -8,7 +8,7 @@ from scipy.stats.stats import spearmanr
 import sys
 from six.moves import input
 from utils.misc import normalize
-from utils.matrix import load_dense_txt, load_sparse_txt
+from utils.matrix import load_dense, load_sparse
 from eval.testset import load_analogy, get_ana_vocab
 from eval.similarity import prepare_similarities
 from eval.recast import retain_words, align_matrix
@@ -28,9 +28,9 @@ def main():
     args = parser.parse_args()
     
     if args.sparse:
-        matrix, vocab, _ = load_sparse_txt(args.vector_file)
+        matrix, vocab, _ = load_sparse(args.vector_file)
     else:
-        matrix, vocab, _ = load_dense_txt(args.vector_file)
+        matrix, vocab, _ = load_dense(args.vector_file)
     
     if args.normalize:
         matrix = normalize(matrix, args.sparse)
