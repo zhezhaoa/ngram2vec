@@ -45,3 +45,15 @@ def normalize(matrix, sparse = False):
         norm = np.sqrt(np.sum(matrix * matrix, axis=1))
         matrix = matrix / norm[:, np.newaxis]
     return matrix
+
+
+def union_vocabulary(vocab_list):
+    vocab = {}
+    for vocab_p in vocab_list:
+        for w in vocab_p:
+            if w not in vocab:
+                vocab[w] = vocab_p[w]
+            else:
+                vocab[w] += vocab_p[w]
+    return vocab
+
