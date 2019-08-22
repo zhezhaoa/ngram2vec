@@ -47,7 +47,7 @@ def normalize(matrix, sparse = False):
     return matrix
 
 
-def union_vocabulary(vocab_list):
+def merge_vocabularies(vocab_list):
     vocab = {}
     for vocab_p in vocab_list:
         for w in vocab_p:
